@@ -22,7 +22,8 @@ public class MovieCupTest
     [Fact]
     public void Sort_Movies()
     {
-        var movies = MovieCup.OrderByTitle(_movies);
+        var competition = new Competition(_movies);
+        var movies = competition.OrderByTitle(_movies);
 
         Assert.Equal("Deadpool 2", movies[0].Title);
         Assert.Equal("Han Solo: Uma História Star Wars", movies[1].Title);
@@ -37,17 +38,37 @@ public class MovieCupTest
     [Fact]
     public void Winner_First_Round()
     {
-        var movies = MovieCup.OrderByTitle(_movies);
-        var tournament = MovieCup.MakeTournament(movies);
+        var competition = new Competition(_movies);
+        competition.NextRound();
+        var winners = competition.GetWinnersByPreviousRound(1);
 
-        var winner1 = MovieCup.RoundWinner(tournament[0].Item1, tournament[0].Item2);
-        var winner2 = MovieCup.RoundWinner(tournament[1].Item1, tournament[1].Item2);
-        var winner3 = MovieCup.RoundWinner(tournament[2].Item1, tournament[2].Item2);
-        var winner4 = MovieCup.RoundWinner(tournament[3].Item1, tournament[3].Item2);
+        Assert.Equal("Vingadores: Guerra Infinita", winners[0].Title);
+        Assert.Equal("Thor: Ragnarok", winners[1].Title);
+        Assert.Equal("Os Incríveis 2", winners[2].Title);
+        Assert.Equal("Jurassic World: Reino Ameaçado", winners[3].Title);
+    }
 
-        Assert.Equal("Vingadores: Guerra Infinita", winner1.Title);
-        Assert.Equal("Thor: Ragnarok", winner2.Title);
-        Assert.Equal("Os Incríveis 2", winner3.Title);
-        Assert.Equal("Jurassic World: Reino Ameaçado", winner4.Title);
+    [Fact]
+    public void Winner_Second_Round()
+    {
+        var competition = new Competition(_movies);
+        competition.NextRound();
+        competition.NextRound();
+        var winners = competition.GetWinnersByPreviousRound(2);
+
+        Assert.Equal("Vingadores: Guerra Infinita", winners[0].Title);
+        Assert.Equal("Os Incríveis 2", winners[1].Title);
+    }
+
+    [Fact]
+    public void Winner_Three_Round()
+    {
+        var competition = new Competition(_movies);
+        competition.NextRound();
+        competition.NextRound();
+        competition.NextRound();
+        var winners = competition.GetWinnersByPreviousRound(3);
+
+        Assert.Equal("Vingadores: Guerra Infinita", winners[0].Title);
     }
 }
