@@ -1,3 +1,4 @@
+using MovieCup.Domain.Enums;
 using src.MovieCup.Shared.Models;
 using System;
 
@@ -10,22 +11,25 @@ namespace MovieCup.Domain.Models
             Id = id;
             First = first;
             Second = second;
+            Winner = MatchWinner.Unknown;
         }
 
         public Movie First { get; private set; }
         public Movie Second { get; private set; }
 
-        public Movie Winner { get; private set; }
+        public MatchWinner Winner { get; private set; }
 
         public void Play()
         {
             if (First.Note == Second.Note)
             {
-                Winner = First.Title.CompareTo(Second.Title) <= 0 ? First : Second;
+                Winner = First.Title.CompareTo(Second.Title) <= 0 ? MatchWinner.FirstPlayer : MatchWinner.SecondPlayer;
                 return;
             }
-
-            Winner = First.Note > Second.Note ? First : Second;
+            else
+            {
+                Winner = First.Note > Second.Note ? MatchWinner.FirstPlayer : MatchWinner.SecondPlayer;
+            }
         }
     }
 }

@@ -1,18 +1,30 @@
 ﻿using MovieCup.Domain.Interfaces;
 using MovieCup.Domain.Models;
-using Newtonsoft.Json;
+using MovieCup.Infra.Data.ViewModel;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MovieCup.Infra.Data.Repository
 {
-    class MovieRepository : Repository<Movie, string>, IMovieRepository
+    public class MovieRepository : Repository<Movie, string>, IMovieRepository
     {
-
-        public async Task<Movie> GetUserAsync(int userId)
+        public async Task<IEnumerable<Movie>> GetByIdsAsync(string[] movieIds)
         {
-            var userJson = await GetStringAsync("users/" + userId);
-            var user = JsonConvert.DeserializeObject<Movie>(userJson);
-            return user;
+            var movies = await GetAllAsync<MovieViewModel>("filmes");
+
+            return movies
+                .Where(movie => movieIds.Contains(movie.Titulo))
+                .Select(movie => new Movie(movie.Id,movie.Titulo,movie.Ano,movie.Nota))
+                .ToList();
+        }
+
+        public async Task<IEnumerable<Movie>> GetAllAsync()
+        {
+            var movies = await GetAllAsync<MovieViewModel>("filmes");
+            return movies
+                .Select(movie => new Movie(movie.Id, movie.Titulo, movie.Ano, movie.Nota))
+                .ToList();
         }
     }
 }

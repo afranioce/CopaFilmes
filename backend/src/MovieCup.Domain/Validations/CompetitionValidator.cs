@@ -3,9 +3,9 @@ using MovieCup.Domain.Models;
 
 namespace MovieCup.Domain.Validations
 {
-    class NewCompetitionCommandValidation : AbstractValidator<Competition>
+    class CompetitionValidator : AbstractValidator<Competition>
     {
-        public NewCompetitionCommandValidation()
+        public CompetitionValidator()
         {
             ValidatePlayers();
         }

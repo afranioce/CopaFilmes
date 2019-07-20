@@ -2,7 +2,7 @@
 
 namespace MovieCup.Domain.Commands
 {
-    class NewCompetitionCommand : ICommand
+    public class NewCompetitionCommand : ICommand
     {
         public NewCompetitionCommand(string[] playerIds)
         {

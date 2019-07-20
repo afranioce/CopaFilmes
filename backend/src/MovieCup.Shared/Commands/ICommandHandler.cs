@@ -1,7 +1,9 @@
-﻿namespace MovieCup.Shared.Commands
+﻿using System.Threading.Tasks;
+
+namespace MovieCup.Shared.Commands
 {
     public interface ICommandHandler<T> where T : ICommand
     {
-        ICommandResult Handle(T command);
+        Task<ICommandResult> Handler(T command);
     }
 }

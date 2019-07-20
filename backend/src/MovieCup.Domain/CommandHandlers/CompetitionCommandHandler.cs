@@ -1,20 +1,42 @@
 ﻿using MovieCup.Domain.Commands;
 using MovieCup.Domain.Events;
+using MovieCup.Domain.Interfaces;
 using MovieCup.Domain.Models;
+using MovieCup.Domain.Validations;
 using MovieCup.Shared.Commands;
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MovieCup.Domain.CommandHandlers
 {
-    class CompetitionCommandHandler
-        : ICommandHandler<NewCompetitionCommand>
+    public class CompetitionCommandHandler : ICommandHandler<NewCompetitionCommand>
     {
-        public ICommandResult Handle(NewCompetitionCommand command)
-        {
-            var competition = new Competition(Guid.NewGuid(), 8);
-            competition.AddParticipants(_movies);
+        private readonly IMovieRepository _movieRepository;
 
-            return new CompetitionCompletedEvent();
+        public CompetitionCommandHandler(IMovieRepository movieRepository)
+        {
+            _movieRepository = movieRepository;
+        }
+
+        public async Task<ICommandResult> Handler(NewCompetitionCommand command)
+        {
+            var movies = await _movieRepository.GetByIdsAsync(command.PlayerIds);
+
+            var competition = new Competition(Guid.NewGuid(), command.PlayerIds.Length);
+            competition.AddPlayers(movies.ToList());
+
+            var validator = new CompetitionValidator();
+            var validateResult = validator.Validate(competition);
+            if (!validateResult.IsValid)
+            {
+                return new ValidationFailureEvent(validateResult.Errors);
+            }
+
+            competition.Start();
+            var ranking = competition.GetBracketByRound(competition.NumberOfRounds).Ranking;
+
+            return new CompetitionCompletedEvent(ranking.ToList());
         }
     }
 }

@@ -1,7 +1,7 @@
+using src.MovieCup.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using src.MovieCup.Shared.Models;
 
 namespace MovieCup.Domain.Models
 {
@@ -16,11 +16,6 @@ namespace MovieCup.Domain.Models
             CalculateRounds(numberOfPlayers);
         }
 
-        public void AddParticipants(List<Movie> movies)
-        {
-            _players.AddRange(movies);
-        }
-
         public int NumberOfPlayers { get; private set; }
         public int NumberOfRounds { get; private set; }
         public IReadOnlyList<Movie> Players => _players;
@@ -32,12 +27,30 @@ namespace MovieCup.Domain.Models
             NumberOfRounds = (int)Math.Ceiling(Math.Log(numberOfPlayers) / Math.Log(2));
         }
 
+        public void AddPlayers(List<Movie> movies)
+        {
+            _players.AddRange(movies);
+        }
+
+        public void Start()
+        {
+            for (var round = 1; round <= NumberOfRounds; round++)
+            {
+                CompleteOfRound(round);
+            }
+        }
+
+        public void CompleteOfRound(int round)
+        {
+            var bracket = GenerateBracketOfRound(round);
+            bracket.Complete();
+            _brackets.Add(bracket);
+        }
+
         public List<Movie> SortPlayersByTitle()
         {
             return _players.OrderBy(player => player.Title).ToList();
         }
-
-        private int CurrentRound => _brackets.Any() ? _brackets.Max(bracket => bracket.Round) : 0;
 
         private List<Movie> GetPlayersOfFirstRound()
         {
@@ -53,21 +66,9 @@ namespace MovieCup.Domain.Models
             return _players;
         }
 
-        public void NextRound()
+        private Bracket GenerateBracketOfRound(int round)
         {
-            var nextRound = CurrentRound + 1;
-            var isLastRound = nextRound == NumberOfRounds;
-            if (isLastRound)
-            {
-                return;
-            }
-
-            GenerateMatchesOfRound(nextRound);
-        }
-
-        public void GenerateMatchesOfRound(int round)
-        {
-            var players = round == 1 ? GetPlayersOfFirstRound() : GetWinnersOfRound(round - 1);
+            var players = round == 1 ? GetPlayersOfFirstRound() : GetBracketByRound(round - 1).GetWinners();
 
             var bracket = new Bracket(Guid.NewGuid(), round);
             for (var i = 1; i < players.Count; i += 2)
@@ -75,22 +76,13 @@ namespace MovieCup.Domain.Models
                 var match = new Match(Guid.NewGuid(), players[i - 1], players[i]);
                 bracket.AddMatch(match);
             }
-            _brackets.Add(bracket);
+
+            return bracket;
         }
 
-        public List<Movie> GetWinnersOfRound(int round)
+        public Bracket GetBracketByRound(int round)
         {
-            var matches = GetMatchesOfRound(round);
-            return matches.Select(match => 
-            {
-                match.Play();
-                return match.Winner;
-            }).ToList();
-        }
-
-        public IReadOnlyCollection<Match> GetMatchesOfRound(int round)
-        {
-            return _brackets.Find(bracket => bracket.Round == round).Matches;
+            return _brackets.FirstOrDefault(bracket => bracket.Round == round);
         }
     }
 }

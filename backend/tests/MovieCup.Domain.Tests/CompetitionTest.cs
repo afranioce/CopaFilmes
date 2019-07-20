@@ -1,34 +1,28 @@
+using MovieCup.Domain.Enums;
 using MovieCup.Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace MovieCup.Domain.Tests
 {
-    public class CompetitionTest
+    public class CompetitionTest : IClassFixture<CompetitionFixture>
     {
-        private List<Movie> _movies;
+        private readonly CompetitionFixture _fixture;
 
-        public CompetitionTest()
+        public CompetitionTest(CompetitionFixture fixture)
         {
-            _movies = new List<Movie>{
-                new Movie("tt3606756", "Os Incríveis 2", 2018, 8.5),
-                new Movie("tt4881806", "Jurassic World: Reino Ameaçado", 2018, 6.7),
-                new Movie("tt5164214", "Oito Mulheres e um Segredo", 2018, 6.3),
-                new Movie("tt7784604", "Hereditário", 2018, 7.8),
-                new Movie("tt4154756", "Vingadores: Guerra Infinita", 2018, 8.8),
-                new Movie("tt5463162", "Deadpool 2", 2018, 8.1),
-                new Movie("tt3778644", "Han Solo: Uma História Star Wars", 2018, 7.2),
-                new Movie("tt3501632", "Thor: Ragnarok", 2017, 7.9)
-            };
+            _fixture = fixture;
         }
 
         [Fact]
         public void Sort_Movies()
         {
             // Arrange
-            var competition = new Competition(8);
-            competition.AddParticipants(_movies);
+            var players = _fixture.GetMovies();
+            var competition = new Competition(Guid.NewGuid(), 8);
+            competition.AddPlayers(players);
 
             // Act
             var movies = competition.SortPlayersByTitle();
@@ -48,12 +42,13 @@ namespace MovieCup.Domain.Tests
         public void Winner_First_Round()
         {
             // Arrange
+            var players = _fixture.GetMovies();
             var competition = new Competition(Guid.NewGuid(), 8);
-            competition.AddParticipants(_movies);
+            competition.AddPlayers(players);
 
             // Act
-            competition.NextRound();
-            var winners = competition.GetWinnersOfRound(1);
+            competition.Start();
+            var winners = competition.GetBracketByRound(1).GetWinners();
 
             // Assert
             Assert.Equal("Vingadores: Guerra Infinita", winners[0].Title);
@@ -66,13 +61,13 @@ namespace MovieCup.Domain.Tests
         public void Winner_Second_Round()
         {
             // Arrange
+            var players = _fixture.GetMovies();
             var competition = new Competition(Guid.NewGuid(), 8);
-            competition.AddParticipants(_movies);
+            competition.AddPlayers(players);
 
             // Act
-            competition.NextRound();
-            competition.NextRound();
-            var winners = competition.GetWinnersOfRound(2);
+            competition.Start();
+            var winners = competition.GetBracketByRound(2).GetWinners();
 
             // Assert
             Assert.Equal("Vingadores: Guerra Infinita", winners[0].Title);
@@ -83,17 +78,33 @@ namespace MovieCup.Domain.Tests
         public void Winner_Three_Round()
         {
             // Arrange
+            var players = _fixture.GetMovies();
             var competition = new Competition(Guid.NewGuid(), 8);
-            competition.AddParticipants(_movies);
+            competition.AddPlayers(players);
 
             // Act
-            competition.NextRound();
-            competition.NextRound();
-            competition.NextRound();
-            var winners = competition.GetWinnersOfRound(2);
+            competition.Start();
+            var winners = competition.GetBracketByRound(3).GetWinners();
 
             // Assert
             Assert.Equal("Vingadores: Guerra Infinita", winners[0].Title);
+        }
+
+        [Fact]
+        public void Classification_Last_Round()
+        {
+            // Arrange
+            var players = _fixture.GetMovies();
+            var competition = new Competition(Guid.NewGuid(), 8);
+            competition.AddPlayers(players);
+
+            // Act
+            competition.Start();
+            var ranking = competition.GetBracketByRound(3).Ranking.ToList();
+
+            // Assert
+            Assert.Equal("Vingadores: Guerra Infinita", ranking[0].Title);
+            Assert.Equal("Os Incríveis 2", ranking[1].Title);
         }
     }
 }
