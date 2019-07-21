@@ -17,9 +17,9 @@ namespace MovieCup.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] NewCompetitionCommand newCompetitionCommand)
+        public async Task<IActionResult> Post([FromBody] string[] playerIds)
         {
-            var result = await _competitionCommandHandler.Handler(newCompetitionCommand);
+            var result = await _competitionCommandHandler.Handler(new NewCompetitionCommand(playerIds));
             return Response(result);
         }
     }
