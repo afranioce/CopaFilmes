@@ -1,0 +1,8 @@
+bin/
+obj/
+.vs/
+
+
+# System Files
+.DS_Store
+Thumbs.db
