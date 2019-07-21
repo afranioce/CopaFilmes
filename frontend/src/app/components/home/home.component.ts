@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormArray, FormControl } from '@angular/forms';
 import { MovieService } from '../../services/movie.service';
 import { Movie } from '../../models/movie';
+import { CompetitionService } from 'src/app/services/competition.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -18,7 +20,10 @@ export class HomeComponent implements OnInit {
     playerIds: new FormArray([])
   });
 
-  constructor(private movieService: MovieService) { }
+  constructor(
+    private movieService: MovieService,
+    private competitionService: CompetitionService,
+    private router: Router) { }
 
   ngOnInit() {
     this.movieService.getAll().subscribe(movies => this.movies = movies);
@@ -37,7 +42,8 @@ export class HomeComponent implements OnInit {
   }
 
   submit() {
-    const selectedOrderIds = this.competitionFormGroup.value.playerIds;
-    console.log(selectedOrderIds);
+    this.competitionService
+      .create(this.competitionFormGroup.value.playerIds)
+      .subscribe(result => this.router.navigate(['/results', result]));
   }
 }
