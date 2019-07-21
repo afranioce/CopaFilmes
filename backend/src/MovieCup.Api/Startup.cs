@@ -40,6 +40,13 @@ namespace MovieCup.Api
 
             app.UseRouting();
 
+            app.UseCors(c =>
+            {
+                c.AllowAnyHeader();
+                c.AllowAnyMethod();
+                c.AllowAnyOrigin();
+            });
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
