@@ -14,7 +14,7 @@ namespace MovieCup.Infra.Data.Repository
             var movies = await GetAllAsync<MovieViewModel>("filmes");
 
             return movies
-                .Where(movie => movieIds.Contains(movie.Titulo))
+                .Where(movie => movieIds.Contains(movie.Id))
                 .Select(movie => new Movie(movie.Id,movie.Titulo,movie.Ano,movie.Nota))
                 .ToList();
         }
