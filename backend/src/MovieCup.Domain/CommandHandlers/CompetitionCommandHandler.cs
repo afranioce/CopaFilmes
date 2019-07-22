@@ -23,7 +23,7 @@ namespace MovieCup.Domain.CommandHandlers
         {
             var movies = await _movieRepository.GetByIdsAsync(command.PlayerIds);
 
-            var competition = new Competition(Guid.NewGuid(), command.PlayerIds.Length);
+            var competition = new Competition(Guid.NewGuid(), command.NumberOfPlayers);
             competition.AddPlayers(movies.ToList());
 
             var validator = new CompetitionValidator();
