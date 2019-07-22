@@ -16,9 +16,16 @@ namespace MovieCup.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll()
         {
             var result = await _movieRepository.GetAllAsync();
+            return Response(result);
+        }
+
+        [Route("{id}")]
+        public async Task<IActionResult> Get(string id)
+        {
+            var result = await _movieRepository.GetByIdAsync(id);
             return Response(result);
         }
     }

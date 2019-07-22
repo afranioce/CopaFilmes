@@ -1,4 +1,4 @@
-using MovieCup.Domain.Interfaces;
+﻿using MovieCup.Domain.Interfaces;
 using MovieCup.Domain.Models;
 using MovieCup.Infra.Data.ViewModel;
 using System.Collections.Generic;
@@ -9,6 +9,12 @@ namespace MovieCup.Infra.Data.Repository
 {
     public class MovieRepository : Repository<Movie, string>, IMovieRepository
     {
+        public async Task<Movie> GetByIdAsync(string id)
+        {
+            var movies = await GetAllAsync<MovieViewModel>("filmes");
+            return movies.First(movie => movie.Id == id).ToDomain();
+        }
+
         public async Task<IEnumerable<Movie>> GetByIdsAsync(string[] movieIds)
         {
             var movies = await GetAllAsync<MovieViewModel>("filmes");

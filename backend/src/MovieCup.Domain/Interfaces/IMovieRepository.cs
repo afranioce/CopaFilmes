@@ -7,6 +7,7 @@ namespace MovieCup.Domain.Interfaces
 {
     public interface IMovieRepository : IRepository<Movie, string>
     {
+        Task<Movie> GetByIdAsync(string id);
         Task<IEnumerable<Movie>> GetByIdsAsync(string[] movieIds);
         Task<IEnumerable<Movie>> GetAllAsync();
     }
