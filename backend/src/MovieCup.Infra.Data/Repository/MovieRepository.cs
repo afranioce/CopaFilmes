@@ -1,4 +1,4 @@
-﻿using MovieCup.Domain.Interfaces;
+using MovieCup.Domain.Interfaces;
 using MovieCup.Domain.Models;
 using MovieCup.Infra.Data.ViewModel;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace MovieCup.Infra.Data.Repository
 
             return movies
                 .Where(movie => movieIds.Contains(movie.Id))
-                .Select(movie => new Movie(movie.Id,movie.Titulo,movie.Ano,movie.Nota))
+                .Select(movie => movie.ToDomain())
                 .ToList();
         }
 
@@ -23,7 +23,7 @@ namespace MovieCup.Infra.Data.Repository
         {
             var movies = await GetAllAsync<MovieViewModel>("filmes");
             return movies
-                .Select(movie => new Movie(movie.Id, movie.Titulo, movie.Ano, movie.Nota))
+                .Select(movie => movie.ToDomain())
                 .ToList();
         }
     }
