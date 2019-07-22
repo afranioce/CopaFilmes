@@ -1,7 +1,9 @@
+import { CompetitionCompleted } from './../models/competition-completed';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Movie } from '../models/movie';
 import { environment } from '../../environments/environment';
+import { NewCompetition } from '../models/new-competition';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +11,7 @@ import { environment } from '../../environments/environment';
 export class CompetitionService {
   constructor(protected http: HttpClient) { }
 
-  create(playerIds: string[]) {
-    return this.http.post<Movie[]>(`${environment.baseUrl}/competitions`, playerIds);
+  create(newCompetition: NewCompetition): Observable<CompetitionCompleted> {
+    return this.http.post<CompetitionCompleted>(`${environment.baseUrl}/competitions`, newCompetition);
   }
 }

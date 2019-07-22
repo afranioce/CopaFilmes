@@ -1,1 +1,11 @@
 <app-header [title]="title" [description]="description"></app-header>
+
+<div fxLayout="column" fxLayout.xs="column" fxLayoutWrap fxLayoutAlign="center">
+    <mat-card *ngFor="let movie of movies; let i = index" fxLayout="row">
+        <h1 fxFlex="10">{{ i+1 }}<sup>o</sup></h1>
+        <mat-card-title-group>
+            <mat-card-title>{{ movie.title }}</mat-card-title>
+            <mat-card-subtitle>{{ movie.year }}</mat-card-subtitle>
+        </mat-card-title-group>
+    </mat-card>
+</div>

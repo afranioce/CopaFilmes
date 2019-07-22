@@ -1,3 +1,4 @@
+import { NewCompetition } from './../../models/new-competition';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormArray, FormControl } from '@angular/forms';
 import { MovieService } from '../../services/movie.service';
@@ -11,11 +12,11 @@ import { Router } from '@angular/router';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  title: string = "Fase da Seleção";
-  description: string = "Selecione 8 filmes que você deseja que entrem na competição e depois pressione o botão \"Gerar Meu Campeonato\" para prosseguir.";
+  title = 'Fase da Seleção';
+  description = 'Selecione 8 filmes que você deseja que entrem na competição e depois pressione o botão \"Gerar Meu Campeonato\" para prosseguir.';
 
   movies: Movie[] = [];
-  selecteds: number = 0;
+  selecteds = 0;
   competitionFormGroup = new FormGroup({
     playerIds: new FormArray([])
   });
@@ -35,15 +36,24 @@ export class HomeComponent implements OnInit {
       form.push(new FormControl(id));
       ++this.selecteds;
     } else {
-      let idx = form.controls.findIndex(x => x.value == id);
+      const idx = form.controls.findIndex(x => x.value == id);
       form.removeAt(idx);
       --this.selecteds;
     }
   }
 
   submit() {
+    const newCompetition: NewCompetition = {
+      playerIds: this.competitionFormGroup.value.playerIds,
+      numberOfPlayers: 8
+    };
+
     this.competitionService
-      .create(this.competitionFormGroup.value.playerIds)
-      .subscribe(result => this.router.navigate(['/results', result]));
+      .create(newCompetition)
+      .subscribe(({ ranking }) => {
+        this.router.navigate(['/result', {
+          ids: ranking.map(movie => movie.id)
+        }]);
+      });
   }
 }

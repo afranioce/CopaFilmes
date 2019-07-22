@@ -12,4 +12,8 @@ export class MovieService {
   getAll() {
     return this.http.get<Movie[]>(`${environment.baseUrl}/movies`);
   }
+
+  get(id: string) {
+    return this.http.get<Movie>(`${environment.baseUrl}/movies/${id}`);
+  }
 }
