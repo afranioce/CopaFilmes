@@ -37,7 +37,7 @@ namespace MovieCup.Domain.Tests
         {
             // Arrange
             var competitionCommandHandler = _fixture.GetCompetitionCommandHandler();
-            var movies = _fixture.GetMoviesAsync();
+            var movies = _fixture.GetMoviesAsync(1);
             _fixture.MovieRepositoryMock.Setup(r => r.GetByIdsAsync(It.IsAny<string[]>())).Returns(movies);
 
             // Act

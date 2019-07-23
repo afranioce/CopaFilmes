@@ -35,9 +35,11 @@ namespace MovieCup.Domain.Tests
             };
         }
 
-        public Task<IEnumerable<Movie>> GetMoviesAsync()
+        public Task<IEnumerable<Movie>> GetMoviesAsync(int? total = null)
         {
             var movies = GetMovies().AsEnumerable();
+            if (total != null)
+                movies = movies.Take((int)total);
             return Task.FromResult(movies);
         }
     }
