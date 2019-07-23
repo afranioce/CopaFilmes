@@ -1,0 +1,16 @@
+version: '3.5'
+
+services:
+  frontend:
+    build: frontend
+    ports:
+      - 8080:80
+    restart: always
+
+  backend:
+    build:
+      context: backend/
+      dockerfile: src/MovieCup.Api/Dockerfile
+    ports:
+      - 5002:80
+    restart: always

@@ -1,0 +1,5 @@
+node_modules/
+.editorconfig
+CHANGELOG.md
+README.md
+.dockerignore
