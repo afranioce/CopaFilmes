@@ -1,23 +1,21 @@
-<app-header [title]="title" [description]="description"></app-header>
+<header>
+    <app-header [title]="title" [description]="description"></app-header>
+</header>
 <form [formGroup]="competitionFormGroup" (ngSubmit)="submit()">
     <div class="grid-header">
-        <div>
-            <p>Selecionados</p>
-            <p>{{ selecteds }} de {{ this.movies.length }} filmes</p>
-        </div>
-        <div>
-            <button type="submit" mat-flat-button color="primary">Gerar Meu Campeonato</button>
-        </div>
+        <p>Selecionados<br>{{ selecteds }} de {{ this.movies.length }} filmes</p>
+        <button type="submit" mat-flat-button color="primary" [disabled]="competitionFormGroup.invalid || competitionFormGroup.pending">Gerar Meu Campeonato</button>
     </div>
 
+    <mat-spinner *ngIf="movies.length == 0"></mat-spinner>
+
     <div fxLayout="row wrap" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.8%" fxLayoutAlign="center" formArrayName="playerIds">
-        <mat-card fxFlex="0 1 calc(25% - 0.8%)" *ngFor="let movie of movies" fxLayout="row">
-            <mat-checkbox fxFlex="30px" (change)="updateCheckboxes(movie.id, $event.checked)"></mat-checkbox>
-            <mat-card-title-group>
-                <mat-card-title>{{ movie.title }}</mat-card-title>
-                <mat-card-subtitle>{{ movie.year }}</mat-card-subtitle>
-            </mat-card-title-group>
-        </mat-card>
+        <div class="card" fxFlex="24" *ngFor="let movie of movies">
+            <mat-checkbox (change)="updateCheckboxes(movie.id, $event.checked)">
+                <h4 class="title">{{ movie.title }}</h4>
+                <p class="subtitle">{{ movie.year }}</p>
+            </mat-checkbox>
+        </div>
     </div>
 
 </form>

@@ -1,6 +1,6 @@
 import { NewCompetition } from './../../models/new-competition';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormArray, FormControl } from '@angular/forms';
+import { FormGroup, FormArray, FormControl, ValidatorFn, Validators, AbstractControl } from '@angular/forms';
 import { MovieService } from '../../services/movie.service';
 import { Movie } from '../../models/movie';
 import { CompetitionService } from 'src/app/services/competition.service';
@@ -18,7 +18,7 @@ export class HomeComponent implements OnInit {
   movies: Movie[] = [];
   selecteds = 0;
   competitionFormGroup = new FormGroup({
-    playerIds: new FormArray([])
+    playerIds: new FormArray([], this.validationArrayLength(8))
   });
 
   constructor(
@@ -42,7 +42,28 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  // lengthSelectedCheckboxes(equals: number) {
+  //   return (c: AbstractControl): { [key: string]: any } => {
+  //     if (c.value.length != equals)
+  //       return null;
+
+  //     return { 'lengthSelectedCheckboxes': { valid: false } };
+  //   }
+  // }
+
+  validationArrayLength(length: number) {
+    return (control: AbstractControl) => {
+      if (!(control instanceof FormArray)) return;
+      return control.length != length ? { length: true } : null;
+    }
+  }
+
   submit() {
+    if (this.competitionFormGroup.invalid) {
+      console.log(this.competitionFormGroup.errors)
+      return;
+    }
+
     const newCompetition: NewCompetition = {
       playerIds: this.competitionFormGroup.value.playerIds,
       numberOfPlayers: 8

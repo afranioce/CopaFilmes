@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
 import { ResultComponent } from './result/result.component';
-import { MatButtonModule, MatCardModule, MatToolbarModule, MatGridListModule, MatCheckboxModule } from '@angular/material';
+import { MatButtonModule, MatCheckboxModule, MatProgressSpinnerModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
@@ -16,11 +16,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatToolbarModule,
     MatButtonModule,
-    MatCardModule,
-    MatGridListModule,
     MatCheckboxModule,
+    MatProgressSpinnerModule,
     FlexLayoutModule,
   ]
 })
