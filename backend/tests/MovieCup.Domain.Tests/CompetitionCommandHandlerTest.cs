@@ -24,7 +24,7 @@ namespace MovieCup.Domain.Tests
 
             // Act
             var movieSelecteds = new string[] { "tt3606756", "tt4881806", "tt5164214", "tt7784604", "tt4154756", "tt5463162", "tt3778644", "tt3501632" };
-            var result = await competitionCommandHandler.Handler(new NewCompetitionCommand(movieSelecteds)) as CompetitionCompletedEvent;
+            var result = await competitionCommandHandler.Handler(new NewCompetitionCommand(movieSelecteds, 8)) as CompetitionCompletedEvent;
 
             // Assert
             _fixture.MovieRepositoryMock.Verify(r => r.GetByIdsAsync(It.IsAny<string[]>()), Times.Once);
@@ -42,7 +42,7 @@ namespace MovieCup.Domain.Tests
 
             // Act
             var movieSelecteds = new string[] { "tt3606756" };
-            var result = await competitionCommandHandler.Handler(new NewCompetitionCommand(movieSelecteds));
+            var result = await competitionCommandHandler.Handler(new NewCompetitionCommand(movieSelecteds, 8));
 
             // Assert
             _fixture.MovieRepositoryMock.Verify(r => r.GetByIdsAsync(It.IsAny<string[]>()), Times.Once);
